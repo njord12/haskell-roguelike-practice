@@ -29,3 +29,12 @@ emptyBoard (BoardInfo height width) =
 buildInitialBoard :: BoardInfo -> Point -> RenderState
 buildInitialBoard bi iniPlayer =
     RenderState (emptyBoard  bi // [(iniPlayer, Player)]) False
+
+
+updateRenderState :: RenderState -> RenderMessage -> RenderState
+updateRenderState (RenderState b gO) message =
+    case message of
+        RenderBoard delta ->
+            RenderState (b // delta) gO
+        GameOver ->
+            RenderState b True
