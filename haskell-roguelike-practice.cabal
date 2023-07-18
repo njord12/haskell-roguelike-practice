@@ -27,7 +27,6 @@ library
   exposed-modules:
       EventQueue
       GameState
-      Lib
       RenderState
   other-modules:
       Paths_haskell_roguelike_practice
