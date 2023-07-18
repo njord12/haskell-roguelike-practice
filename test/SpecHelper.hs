@@ -1,8 +1,10 @@
 module SpecHelper
-    (module Test.HSpec,
-    module Test.HSpec.Runner
+    (module Test.Hspec,
+    module Test.Hspec.Runner,
+    module RenderState
     )
 where
 
-import Test.HSpec
-import Test.HSpec.Runner
+import Test.Hspec
+import Test.Hspec.Runner
+import RenderState

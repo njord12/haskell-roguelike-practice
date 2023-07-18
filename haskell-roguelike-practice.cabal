@@ -35,7 +35,8 @@ library
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
   default-language: Haskell2010
 
 executable haskell-roguelike-practice-exe
@@ -46,7 +47,8 @@ executable haskell-roguelike-practice-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
     , haskell-roguelike-practice
   default-language: Haskell2010
 
@@ -54,13 +56,16 @@ test-suite haskell-roguelike-practice-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      RenderStateSpec
+      SomethingSpec
       SpecHelper
       Paths_haskell_roguelike_practice
   hs-source-dirs:
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
     , haskell-roguelike-practice
     , hspec
   default-language: Haskell2010
