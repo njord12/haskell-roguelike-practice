@@ -1,8 +1,10 @@
+{-# LANGUAGE BangPatterns #-}
 module RenderState
 where
 
 
 import Data.Array (Array, listArray, (//))
+import Data.Foldable (foldl')
 
 type Point = (Int, Int)
 
@@ -38,3 +40,22 @@ updateRenderState (RenderState b gO) message =
             RenderState (b // delta) gO
         GameOver ->
             RenderState b True
+
+cellToChar :: CellType -> String
+cellToChar c =
+    case c of 
+        Floor -> "."
+        Player -> "@"
+        Wall -> "#"
+
+render :: BoardInfo -> RenderState -> String
+render binf@(BoardInfo h w) (RenderState b gOver) =
+  if gOver
+    then fst $ boardToString(emptyBoard binf)
+    else fst $ boardToString b
+  where 
+    boardToString =  foldl' fprint ("", 0)
+    fprint (!s, !i) cell = 
+      if ((i + 1) `mod` w) == 0 
+        then (s <> cellToChar cell <> "\n", i + 1 )
+        else (s <> cellToChar cell , i + 1)
