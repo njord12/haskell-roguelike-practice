@@ -44,9 +44,9 @@ updateRenderState (RenderState b gO) message =
 cellToChar :: CellType -> String
 cellToChar c =
     case c of 
-        Floor -> "."
-        Player -> "@"
-        Wall -> "#"
+        Floor -> ". "
+        Player -> "@ "
+        Wall -> "# "
 
 render :: BoardInfo -> RenderState -> String
 render binf@(BoardInfo h w) (RenderState b gOver) =
