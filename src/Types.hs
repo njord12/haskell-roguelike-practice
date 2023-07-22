@@ -4,9 +4,9 @@ import Data.Array
 
 newtype MessageQueue = MessageQueue [String] deriving Show 
 
-data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest deriving Show
+data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest | None deriving Show
 
-data PlayerData = PlayerData {postition :: Point, hitPoints :: Int} deriving (Show, Eq)
+data PlayerData = PlayerData {position :: Point, hitPoints :: Int} deriving (Show, Eq)
 
 data MapData = MapData {level :: Int, stairsPosition :: Point}
 
