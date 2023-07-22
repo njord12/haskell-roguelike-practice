@@ -25,8 +25,6 @@ emptyBoard (BoardInfo height width) =
         bounds = ((1,1), (height, width))
         emptyCells = replicate (height * width) Floor
 
--- >>> emptyBoard (BoardInfo 2 2)
-
 buildInitialBoard :: BoardInfo -> Point -> RenderState
 buildInitialBoard bi iniPlayer =
     RenderState (emptyBoard  bi // [(iniPlayer, RenderState.Player)]) False
