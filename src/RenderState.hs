@@ -1,5 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
-module RenderState (Point, BoardInfo (BoardInfo), render, CellType (..), RenderMessage (..), updateRenderState, buildInitialBoard, RenderState (..), emptyBoard)
+module RenderState (render, updateRenderState, buildInitialBoard, emptyBoard)
 where
 
 

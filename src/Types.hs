@@ -24,6 +24,7 @@ type DeltaBoard = [(Point, CellType)]
 data RenderMessage = RenderBoard DeltaBoard | GameOver deriving Show
 
 data RenderState = RenderState {board :: Board, gameOver :: Bool} deriving Show
+
 emptyMessageQueue :: MessageQueue
 emptyMessageQueue = MessageQueue []
 

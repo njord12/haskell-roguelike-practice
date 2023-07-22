@@ -4,7 +4,7 @@ module RenderStateSpec
 where
 
 import SpecHelper
-import RenderState (emptyBoard, BoardInfo (BoardInfo), buildInitialBoard, updateRenderState, RenderState, CellType (Player), RenderMessage)
+import RenderState (emptyBoard, buildInitialBoard, updateRenderState)
 import Data.Array (Array, assocs)
 
 

@@ -3,7 +3,6 @@ where
 
 import SpecHelper
 import GameState (moveHelper)
-import Types 
 
 
 spec :: Spec
