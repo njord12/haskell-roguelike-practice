@@ -1,6 +1,5 @@
 module GameState
 where
-import RenderState (BoardInfo (BoardInfo))
 import Types
 
 
@@ -10,8 +9,8 @@ import Types
 --     let
 
 
-moveHelper :: Movement -> Player -> BoardInfo -> Point
-moveHelper mov (Player (y,x) _) (BoardInfo h w) =
+moveHelper :: Movement -> PlayerData -> BoardInfo -> Point
+moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
     case mov of
         North -> (handleEdge (y - 1) h, x)
         South -> (handleEdge (y + 1) h, x)

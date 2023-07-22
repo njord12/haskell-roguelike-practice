@@ -1,7 +1,5 @@
 module Main (main) where
 
-import RenderState (render, BoardInfo (BoardInfo))
-
 main :: IO ()
 main = do
     putStrLn "nothing"
