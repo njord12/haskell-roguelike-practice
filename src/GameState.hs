@@ -1,9 +1,9 @@
 module GameState
 where
-import RenderState (Point, RenderMessage, BoardInfo (..))
+import RenderState (BoardInfo (BoardInfo), Point)
 
 
-data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest
+data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest deriving Show
 
 data Player = Player {postition :: Point, hitPoints :: Int} deriving (Show, Eq)
 
@@ -20,11 +20,16 @@ data GameState = GameState {player :: Player, mapData :: MapData, movement :: Mo
 moveHelper :: Movement -> Player -> BoardInfo -> Point
 moveHelper mov (Player (y,x) _) (BoardInfo h w) =
     case mov of
-        North -> (y - 1, x)
-        South -> (y + 1, x)
-        East -> (y, x + 1)
-        West -> (y, x - 1)
-        NorthEast -> (y - 1, x + 1)
-        NorthWest -> (y - 1, x - 1)
-        SouthEast -> (y + 1, x + 1)
-        SouthWest -> (y + 1, x - 1)
+        North -> (handleEdge (y - 1) h, x)
+        South -> (handleEdge (y + 1) h, x)
+        East -> (y, handleEdge (x + 1) w)
+        West -> (y, handleEdge (x - 1) w)
+        NorthEast -> (handleEdge (y - 1) h, handleEdge (x + 1) w)
+        NorthWest -> (handleEdge (y - 1) h, handleEdge (x - 1) w)
+        SouthEast -> (handleEdge (y + 1) h, handleEdge (x + 1) w)
+        SouthWest -> (handleEdge (y + 1) h, handleEdge (x - 1) w)
+    where
+        handleEdge delta edge
+            |delta < 1 = 1
+            |delta > edge = edge
+            |otherwise = delta
