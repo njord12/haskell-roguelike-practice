@@ -1,5 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
-module RenderState
+module RenderState (Point, BoardInfo (BoardInfo), render)
 where
 
 
