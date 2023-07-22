@@ -2,7 +2,6 @@ module GameStateSpec
 where
 
 import SpecHelper
-import GameState (moveHelper)
 
 
 spec :: Spec
@@ -17,8 +16,11 @@ spec =
         it "non-edge movement should change position" $
             moveHelper East (PlayerData (1,1) 0) getDefaultBoardInfo `shouldBe` (1,2)
 
-        it "diagonal movement should work while not moving past corner" $
+        it "diagonal movement should work while moving opposite of corner" $
             moveHelper SouthEast (PlayerData (1,1) 0) getDefaultBoardInfo `shouldBe` (2,2)
+        
+        it "diagonal movement at edge corner should not change position" $
+            moveHelper NorthWest (PlayerData (1,1) 0) getDefaultBoardInfo `shouldBe` (1,1)
 
 
 getDefaultBoardInfo :: BoardInfo
