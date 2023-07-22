@@ -1,8 +1,19 @@
 module Main (main) where
 
-import RenderState (buildInitialBoard, render, BoardInfo (BoardInfo))
+import RenderState (render, BoardInfo (BoardInfo))
 
 main :: IO ()
 main = do
-    let board = buildInitialBoard (BoardInfo 10 10) (3,3)
-    putStr $ render (BoardInfo 10 10) board
+    putStrLn "nothing"
+
+
+--Todo:
+--render place holder status line and messages window
+
+
+--Gameloop:
+--Render grid
+--Read input
+--update grid state
+--clear display
+--render grid again

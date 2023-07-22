@@ -1,12 +1,11 @@
 {-# LANGUAGE BangPatterns #-}
-module RenderState (Point, BoardInfo (BoardInfo), render)
+module RenderState (Point, BoardInfo (BoardInfo), render, CellType (..), RenderMessage (..), updateRenderState, buildInitialBoard, RenderState (..), emptyBoard)
 where
 
 
 import Data.Array (Array, listArray, (//))
 import Data.Foldable (foldl')
-
-type Point = (Int, Int)
+import Types
 
 data CellType = Floor | Player | Wall deriving (Show, Eq)
 
@@ -30,7 +29,7 @@ emptyBoard (BoardInfo height width) =
 
 buildInitialBoard :: BoardInfo -> Point -> RenderState
 buildInitialBoard bi iniPlayer =
-    RenderState (emptyBoard  bi // [(iniPlayer, Player)]) False
+    RenderState (emptyBoard  bi // [(iniPlayer, RenderState.Player)]) False
 
 
 updateRenderState :: RenderState -> RenderMessage -> RenderState
@@ -45,7 +44,7 @@ cellToChar :: CellType -> String
 cellToChar c =
     case c of 
         Floor -> ". "
-        Player -> "@ "
+        RenderState.Player -> "@ "
         Wall -> "# "
 
 render :: BoardInfo -> RenderState -> String

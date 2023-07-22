@@ -1,15 +1,8 @@
 module GameState
 where
-import RenderState (BoardInfo (BoardInfo), Point)
+import RenderState (BoardInfo (BoardInfo))
+import Types
 
-
-data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest deriving Show
-
-data Player = Player {postition :: Point, hitPoints :: Int} deriving (Show, Eq)
-
-data MapData = MapData {level :: Int, stairsPosition :: Point}
-
-data GameState = GameState {player :: Player, mapData :: MapData, movement :: Movement}
 
 
 -- move :: BoardInfo -> GameState -> (RenderState.RenderMessage, GameState)
