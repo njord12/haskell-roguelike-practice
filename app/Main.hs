@@ -1,5 +1,5 @@
 module Main (main) where
-import System.IO (hReady, stdin)
+import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
 import Types (Movement(..), GameState(..), BoardInfo (..), RenderState, PlayerData (PlayerData, position, hitPoints), MapData (..))
 import RenderState (render, updateRenderState, buildInitialBoard)
 import GameState (move)
@@ -11,6 +11,11 @@ main = do
     let pData = PlayerData {position = (3,3), hitPoints = 10}
     let gState = GameState {player = pData, movement = None, mapData = MapData 1 (10,10)}
     let rState = buildInitialBoard bInfo (position pData)
+    hSetBuffering stdin NoBuffering
+    hSetEcho stdin False
+
+    hSetBuffering stdout NoBuffering
+    hSetBinaryMode stdout True
     gameLoop bInfo gState rState
 
 
