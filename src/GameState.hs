@@ -17,7 +17,8 @@ move bi state@(GameState player grid mov) =
         (RenderBoard delta, newState)
 
 
-
+--TODO: 
+-- moving diagonally on an edge but not corner moves laterally
 moveHelper :: Movement -> PlayerData -> BoardInfo -> Point
 moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
     case mov of
@@ -25,13 +26,18 @@ moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
         South -> (handleEdge (y + 1) h, x)
         East -> (y, handleEdge (x + 1) w)
         West -> (y, handleEdge (x - 1) w)
-        NorthEast -> (handleEdge (y - 1) h, handleEdge (x + 1) w)
-        NorthWest -> (handleEdge (y - 1) h, handleEdge (x - 1) w)
-        SouthEast -> (handleEdge (y + 1) h, handleEdge (x + 1) w)
-        SouthWest -> (handleEdge (y + 1) h, handleEdge (x - 1) w)
+        NorthEast -> handleDiagonal y x (y - 1) (x + 1) h w
+        NorthWest -> handleDiagonal y x (y - 1) (x - 1) h w
+        SouthEast -> handleDiagonal y x (y + 1) (x + 1) h w
+        SouthWest -> handleDiagonal y x (y + 1) (x - 1) h w
+
         None -> (y, x)
     where
         handleEdge delta edge
             |delta < 1 = 1
             |delta > edge = edge
             |otherwise = delta
+        handleDiagonal currentY currentX deltaY deltaX yEdge xEdge
+            |deltaY < 1 || deltaX < 1 = (currentY, currentX)
+            |deltaY > yEdge ||deltaX > xEdge = (currentY, currentX)
+            |otherwise = (deltaY, deltaX)

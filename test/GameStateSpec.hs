@@ -23,6 +23,9 @@ spec =
         it "diagonal movement at edge corner should not change position" $
             moveHelper NorthWest (PlayerData (1,1) 0) getDefaultBoardInfo `shouldBe` (1,1)
         
+        it "moving diagonally towards an edge but not in the corner should not move" $
+            moveHelper NorthWest (PlayerData (1,2) 0) getDefaultBoardInfo `shouldBe` (1,2)
+        
         it "no movement should keep current position" $
             moveHelper None (PlayerData (1,1) 0) getDefaultBoardInfo `shouldBe` (1,1)
 
