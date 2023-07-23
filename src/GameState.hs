@@ -12,9 +12,16 @@ move bi state@(GameState player grid mov) =
         newPlayerPos = moveHelper mov player bi
         newPlayerData = PlayerData newPlayerPos (hitPoints player)
         newState = state{player = newPlayerData, mapData = grid, movement = None}
-        delta = [(newPlayerPos, Player), (oldPlayerPos, Floor)]
+        delta = makeDelta oldPlayerPos newPlayerPos
     in 
         (RenderBoard delta, newState)
+    where
+        makeDelta oldPos newPos =
+            if oldPos == newPos
+            then
+                [(oldPos, Player)]
+            else
+                [(newPos, Player), (oldPos, Floor)]
 
 
 --TODO: 
@@ -30,7 +37,6 @@ moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
         NorthWest -> handleDiagonal y x (y - 1) (x - 1) h w
         SouthEast -> handleDiagonal y x (y + 1) (x + 1) h w
         SouthWest -> handleDiagonal y x (y + 1) (x - 1) h w
-
         None -> (y, x)
     where
         handleEdge delta edge

@@ -4,6 +4,7 @@ import Types (Movement(..), GameState(..), BoardInfo (..), RenderState, PlayerDa
 import RenderState (render, updateRenderState, buildInitialBoard)
 import GameState (move)
 import Data.Maybe (fromMaybe)
+import Debug.Trace (trace)
 
 main :: IO ()
 main = do
@@ -11,24 +12,20 @@ main = do
     let pData = PlayerData {position = (3,3), hitPoints = 10}
     let gState = GameState {player = pData, movement = None, mapData = MapData 1 (10,10)}
     let rState = buildInitialBoard bInfo (position pData)
+
+    --These are needed so the key strokes are read without the need of pressing enter
     hSetBuffering stdin NoBuffering
     hSetEcho stdin False
 
     hSetBuffering stdout NoBuffering
     hSetBinaryMode stdout True
+    
     gameLoop bInfo gState rState
 
 
 --Todo:
 --render place holder status line and messages window
-
-
---Gameloop:
---Render grid
---Read input
---update grid state
---clear display
---render grid again
+--moving past an edge makes character dissapear
 
 gameLoop :: BoardInfo -> GameState -> RenderState -> IO ()
 gameLoop binf state@(GameState player grid mov) renderState = do
