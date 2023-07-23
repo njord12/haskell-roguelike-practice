@@ -1,10 +1,17 @@
 module Main (main) where
 import System.IO (hReady, stdin)
-import Types (Movement(..))
+import Types (Movement(..), GameState(..), BoardInfo (..), RenderState, PlayerData (PlayerData, position, hitPoints), MapData (..))
+import RenderState (render, updateRenderState, buildInitialBoard)
+import GameState (move)
+import Data.Maybe (fromMaybe)
 
 main :: IO ()
 main = do
-    putStrLn "nothing"
+    let bInfo = BoardInfo 10 10
+    let pData = PlayerData {position = (3,3), hitPoints = 10}
+    let gState = GameState {player = pData, movement = None, mapData = MapData 1 (10,10)}
+    let rState = buildInitialBoard bInfo (position pData)
+    gameLoop bInfo gState rState
 
 
 --Todo:
@@ -17,6 +24,17 @@ main = do
 --update grid state
 --clear display
 --render grid again
+
+gameLoop :: BoardInfo -> GameState -> RenderState -> IO ()
+gameLoop binf state@(GameState player grid mov) renderState = do
+    putStr $ render binf renderState
+    key <- getKey
+    let m = parseInput [head key]
+    let (rMsg, gState') = move binf state{movement = aux m}
+    let rState' = updateRenderState renderState rMsg
+    putStr "\ESC[2J" --This cleans the console screen
+    gameLoop binf gState' rState'
+
 
 
 getKey :: IO [Char]
@@ -38,3 +56,6 @@ parseInput "y" = Just NorthWest
 parseInput "n" = Just SouthEast
 parseInput "b" = Just SouthWest
 parseInput _ = Nothing
+
+aux :: Maybe Movement -> Movement
+aux = Data.Maybe.fromMaybe None
