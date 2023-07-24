@@ -1,6 +1,6 @@
 module Types
 where
-import Data.Array
+import Data.Array ( Array )
 
 newtype MessageQueue = MessageQueue [String] deriving Show 
 
@@ -10,7 +10,7 @@ data PlayerData = PlayerData {position :: Point, hitPoints :: Int} deriving (Sho
 
 data MapData = MapData {level :: Int, stairsPosition :: Point}
 
-data GameState = GameState {player :: PlayerData, mapData :: MapData, movement :: Movement}
+data GameState = GameState {player :: PlayerData, mapData :: MapData}
 
 type Point = (Int, Int)
 

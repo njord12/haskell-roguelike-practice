@@ -5,13 +5,13 @@ import Types
 
 --Todo: Movement should probably come from outside instead of being part of game state
 --      Test this
-move :: BoardInfo -> GameState -> (RenderMessage, GameState)
-move bi state@(GameState player grid mov) = 
+move :: BoardInfo -> Movement -> GameState -> (RenderMessage, GameState)
+move bi mov state@(GameState player grid) = 
     let
         oldPlayerPos = position player
         newPlayerPos = moveHelper mov player bi
         newPlayerData = PlayerData newPlayerPos (hitPoints player)
-        newState = state{player = newPlayerData, mapData = grid, movement = None}
+        newState = state{player = newPlayerData, mapData = grid}
         delta = makeDelta oldPlayerPos newPlayerPos
     in 
         (RenderBoard delta, newState)

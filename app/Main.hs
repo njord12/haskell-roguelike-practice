@@ -10,7 +10,7 @@ main :: IO ()
 main = do
     let bInfo = BoardInfo 10 10
     let pData = PlayerData {position = (3,3), hitPoints = 10}
-    let gState = GameState {player = pData, movement = None, mapData = MapData 1 (10,10)}
+    let gState = GameState {player = pData, mapData = MapData 1 (10,10)}
     let rState = buildInitialBoard bInfo (position pData)
 
     --These are needed so the key strokes are read without the need of pressing enter
@@ -25,14 +25,13 @@ main = do
 
 --Todo:
 --render place holder status line and messages window
---moving past an edge makes character dissapear
 
 gameLoop :: BoardInfo -> GameState -> RenderState -> IO ()
-gameLoop binf state@(GameState player grid mov) renderState = do
+gameLoop binf state@(GameState player grid) renderState = do
     putStr $ render binf renderState
     key <- getKey
-    let m = parseInput [head key]
-    let (rMsg, gState') = move binf state{movement = aux m}
+    let m = aux $ parseInput [head key]
+    let (rMsg, gState') = move binf m state
     let rState' = updateRenderState renderState rMsg
     putStr "\ESC[2J" --This cleans the console screen
     gameLoop binf gState' rState'
@@ -47,7 +46,7 @@ getKey = reverse <$> getKey' ""
     more <- hReady stdin
     (if more then getKey' else return) (char : chars)
 
-
+--having this as string for implementing some sort of buffered input in the future
 parseInput :: String -> Maybe Movement
 parseInput "k" = Just North
 parseInput "j" = Just South
