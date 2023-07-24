@@ -8,7 +8,10 @@ module Types (Movement (..),
     DeltaBoard,
     RenderMessage (..),
     RenderState (..),
-    PlayerData (..) 
+    PlayerData (..),
+    emptyMessageQueue,
+    enqueueMessage,
+    nextMessage 
     )
 where
 import Data.Array ( Array )
