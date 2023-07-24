@@ -8,7 +8,7 @@ data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast 
 
 data PlayerData = PlayerData {position :: Point, hitPoints :: Int} deriving (Show, Eq)
 
-data MapData = MapData {level :: Int, stairsPosition :: Point}
+data MapData = MapData {level :: Int, stairsPosition :: Point, grid :: Board}
 
 data GameState = GameState {player :: PlayerData, mapData :: MapData}
 

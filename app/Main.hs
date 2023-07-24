@@ -1,6 +1,6 @@
 module Main (main) where
 import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
-import Types (Movement(..), GameState(..), BoardInfo (..), RenderState, PlayerData (PlayerData, position, hitPoints), MapData (..))
+import Types (Movement(..), GameState(..), BoardInfo (..), RenderState, PlayerData (PlayerData, position, hitPoints), MapData (..), board)
 import RenderState (render, updateRenderState, buildInitialBoard)
 import GameState (move)
 import Data.Maybe (fromMaybe)
@@ -10,8 +10,9 @@ main :: IO ()
 main = do
     let bInfo = BoardInfo 10 10
     let pData = PlayerData {position = (3,3), hitPoints = 10}
-    let gState = GameState {player = pData, mapData = MapData 1 (10,10)}
     let rState = buildInitialBoard bInfo (position pData)
+    let grid = board rState
+    let gState = GameState {player = pData, mapData = MapData 1 (10,10) grid}
 
     --These are needed so the key strokes are read without the need of pressing enter
     hSetBuffering stdin NoBuffering
