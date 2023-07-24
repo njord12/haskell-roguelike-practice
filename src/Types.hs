@@ -1,4 +1,15 @@
-module Types
+module Types (Movement (..),
+    MapData (..),
+    GameState(..),
+    Point,
+    CellType (..),
+    BoardInfo (..),
+    Board,
+    DeltaBoard,
+    RenderMessage (..),
+    RenderState (..),
+    PlayerData (..) 
+    )
 where
 import Data.Array ( Array )
 

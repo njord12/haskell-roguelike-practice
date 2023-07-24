@@ -1,10 +1,9 @@
 module Main (main) where
 import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
-import Types (Movement(..), GameState(..), BoardInfo (..), RenderState, PlayerData (PlayerData, position, hitPoints), MapData (..), board)
-import RenderState (render, updateRenderState, buildInitialBoard)
+import Types (Movement(..), GameState(..), BoardInfo (..), RenderState(..), PlayerData (PlayerData, position, hitPoints), MapData (..), Board)
+import RenderState (buildInitialBoard, renderNew)
 import GameState (move)
 import Data.Maybe (fromMaybe)
-import Debug.Trace (trace)
 
 main :: IO ()
 main = do
@@ -23,19 +22,14 @@ main = do
     
     gameLoop bInfo gState rState
 
-
---Todo:
---render place holder status line and messages window
-
 gameLoop :: BoardInfo -> GameState -> RenderState -> IO ()
-gameLoop binf state@(GameState player grid) renderState = do
-    putStr $ render binf renderState
+gameLoop binf state@(GameState player mapData) renderState = do
+    putStr $ renderNew binf (grid mapData) 
     key <- getKey
     let m = aux $ parseInput [head key]
-    let (rMsg, gState') = move binf m state
-    let rState' = updateRenderState renderState rMsg
+    let gState' = move binf m state
     putStr "\ESC[2J" --This cleans the console screen
-    gameLoop binf gState' rState'
+    gameLoop binf gState' renderState
 
 
 

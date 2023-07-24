@@ -1,12 +1,11 @@
-module GameState
+module GameState (move, moveHelper)
 where
 import Types
 import Data.Array ((//))
 
 
---Todo: Movement should probably come from outside instead of being part of game state
 --      Test this
-move :: BoardInfo -> Movement -> GameState -> (RenderMessage, GameState)
+move :: BoardInfo -> Movement -> GameState -> GameState
 move bi mov state@(GameState player grid) =
     let
         oldPlayerPos = position player
@@ -15,7 +14,7 @@ move bi mov state@(GameState player grid) =
         newState = state{player = newPlayerData, mapData = grid}
         delta = makeDelta oldPlayerPos newPlayerPos
     in
-        (RenderBoard delta, newState)
+        updateMap newState delta
     where
         makeDelta oldPos newPos =
             if oldPos == newPos
@@ -24,9 +23,6 @@ move bi mov state@(GameState player grid) =
             else
                 [(newPos, Player), (oldPos, Floor)]
 
-
---TODO: 
--- moving diagonally on an edge but not corner moves laterally
 moveHelper :: Movement -> PlayerData -> BoardInfo -> Point
 moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
     case mov of
