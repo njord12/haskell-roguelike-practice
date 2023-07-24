@@ -26,7 +26,7 @@ gameLoop :: BoardInfo -> GameState -> RenderState -> IO ()
 gameLoop binf state@(GameState player mapData) renderState = do
     putStr $ render binf (grid mapData) 
     key <- getKey
-    let m = aux $ parseInput [head key]
+    let m = fromMaybe None (parseInput [head key])
     let gState' = move binf m state
     putStr "\ESC[2J" --This cleans the console screen
     gameLoop binf gState' renderState
@@ -52,6 +52,3 @@ parseInput "y" = Just NorthWest
 parseInput "n" = Just SouthEast
 parseInput "b" = Just SouthWest
 parseInput _ = Nothing
-
-aux :: Maybe Movement -> Movement
-aux = Data.Maybe.fromMaybe None

@@ -2,8 +2,6 @@ module GameStateSpec
 where
 
 import SpecHelper
-import GameState (moveHelper)
-
 
 spec :: Spec
 spec = 
