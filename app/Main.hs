@@ -1,17 +1,14 @@
 module Main (main) where
 import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
-import Types (Movement(..), GameState(..), BoardInfo (..), RenderState(..), PlayerData (PlayerData, position, hitPoints), MapData (..), Board)
-import RenderState (buildInitialBoard, render)
-import GameState (move)
+import Types (Movement(..), GameState(..), BoardInfo (..),  MapData (..))
+import RenderState (render)
+import GameState (move, initializeMap)
 import Data.Maybe (fromMaybe)
 
 main :: IO ()
 main = do
     let bInfo = BoardInfo 10 10
-    let pData = PlayerData {position = (3,3), hitPoints = 10}
-    let rState = buildInitialBoard bInfo (position pData)
-    let grid = board rState
-    let gState = GameState {player = pData, mapData = MapData 1 (10,10) grid}
+    let gState = initializeMap bInfo
 
     --These are needed so the key strokes are read without the need of pressing enter
     hSetBuffering stdin NoBuffering
@@ -20,16 +17,16 @@ main = do
     hSetBuffering stdout NoBuffering
     hSetBinaryMode stdout True
     
-    gameLoop bInfo gState rState
+    gameLoop bInfo gState
 
-gameLoop :: BoardInfo -> GameState -> RenderState -> IO ()
-gameLoop binf state@(GameState player mapData) renderState = do
+gameLoop :: BoardInfo -> GameState -> IO ()
+gameLoop binf state@(GameState player mapData) = do
     putStr $ render binf (grid mapData) 
     key <- getKey
     let m = fromMaybe None (parseInput [head key])
     let gState' = move binf m state
     putStr "\ESC[2J" --This cleans the console screen
-    gameLoop binf gState' renderState
+    gameLoop binf gState'
 
 
 

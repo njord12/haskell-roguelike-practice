@@ -1,7 +1,7 @@
-module GameState (move, moveHelper)
+module GameState (move, moveHelper, initializeMap)
 where
 import Types
-import Data.Array ((//))
+import Data.Array ((//), listArray)
 
 
 --      Test this
@@ -10,7 +10,7 @@ move bi mov state@(GameState player grid) =
     let
         oldPlayerPos = position player
         newPlayerPos = moveHelper mov player bi
-        newPlayerData = PlayerData newPlayerPos (hitPoints player)
+        newPlayerData = PlayerData (name player) newPlayerPos (hitPoints player)
         newState = state{player = newPlayerData, mapData = grid}
         delta = makeDelta oldPlayerPos newPlayerPos
     in
@@ -24,7 +24,7 @@ move bi mov state@(GameState player grid) =
                 [(newPos, Player), (oldPos, Floor)]
 
 moveHelper :: Movement -> PlayerData -> BoardInfo -> Point
-moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
+moveHelper mov (PlayerData _ (y,x) _) (BoardInfo h w) =
     case mov of
         North -> (handleEdge (y - 1) h, x)
         South -> (handleEdge (y + 1) h, x)
@@ -46,10 +46,22 @@ moveHelper mov (PlayerData (y,x) _) (BoardInfo h w) =
             |otherwise = (deltaY, deltaX)
 
 
+initializeMap :: BoardInfo -> GameState
+initializeMap (BoardInfo h w) =
+    let
+        playerData = PlayerData "rogue" (h `div` 2, w `div` 2) 10
+        iniMap = listArray ((1,1), (h, w)) (replicate (h * w) Floor)
+        mapWithPlayer = iniMap // [(position playerData, Player)]
+        mData = MapData 1 mapWithPlayer
+    in
+        GameState playerData mData
+
+
 updateMap :: GameState -> DeltaBoard -> GameState
 updateMap state@(GameState _ mapData) delta =
     let
         newGrid = grid mapData // delta
-        newMapData = MapData (level mapData) (stairsPosition mapData) newGrid
+        newMapData = MapData (level mapData) newGrid
     in
         state{mapData = newMapData}
+

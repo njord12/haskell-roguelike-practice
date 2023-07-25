@@ -45,7 +45,6 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=--io-manager=native
-    - -with-rtsopts=-N
     dependencies:
     - haskell-roguelike-practice
 

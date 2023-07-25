@@ -20,9 +20,9 @@ newtype MessageQueue = MessageQueue [String] deriving Show
 
 data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest | None deriving Show
 
-data PlayerData = PlayerData {position :: Point, hitPoints :: Int} deriving (Show, Eq)
+data PlayerData = PlayerData {name :: String, position :: Point, hitPoints :: Int} deriving (Show, Eq)
 
-data MapData = MapData {level :: Int, stairsPosition :: Point, grid :: Board}
+data MapData = MapData {level :: Int, grid :: Board}
 
 data GameState = GameState {player :: PlayerData, mapData :: MapData}
 
