@@ -1,27 +1,51 @@
-module GameState (move, moveHelper, initializeMap)
+module GameState (move, moveHelper, initializeMap, getEntityPosition)
 where
 import Types
-import Data.Array ((//), listArray)
+import Entities (makePlayer, floorTile)
+import Data.Array ( (//), listArray, (!) )
+import Data.Array.Base (assocs)
+import Data.Maybe (fromMaybe)
 
 
---      Test this
-move :: BoardInfo -> Movement -> GameState -> GameState
-move bi mov state@(GameState player grid) =
+--Test this
+--This might cause problems if the entity doesn't exist 
+--Will most likely need to refactor it
+move :: BoardInfo -> Movement -> Entity -> GameState -> GameState
+move bi mov entity state@(GameState mapGrid) =
     let
-        oldPlayerPos = position player
-        newPlayerPos = moveHelper mov player bi
-        newPlayerData = PlayerData (name player) newPlayerPos (hitPoints player)
-        newState = state{player = newPlayerData, mapData = grid}
-        delta = makeDelta oldPlayerPos newPlayerPos
+        oldPosition = fromMaybe (0, 0) (getEntityPosition entity state)
+        newPosition = moveHelperNew mov oldPosition bi
+        currentCell = grid mapGrid ! oldPosition
+        newCell = grid mapGrid ! newPosition
+        delta = [(oldPosition, currentCell{entity = Nothing}), (newPosition, newCell{entity=Just entity})]
     in
-        updateMap newState delta
+        case oldPosition of
+            (0, 0) -> state
+            (_, _) -> updateMap state delta
+
+
+
+moveHelperNew :: Movement -> Point -> BoardInfo -> Point
+moveHelperNew mov (y,x) (BoardInfo h w) =
+    case mov of
+        North -> (handleEdge (y - 1) h, x)
+        South -> (handleEdge (y + 1) h, x)
+        East -> (y, handleEdge (x + 1) w)
+        West -> (y, handleEdge (x - 1) w)
+        NorthEast -> handleDiagonal y x (y - 1) (x + 1) h w
+        NorthWest -> handleDiagonal y x (y - 1) (x - 1) h w
+        SouthEast -> handleDiagonal y x (y + 1) (x + 1) h w
+        SouthWest -> handleDiagonal y x (y + 1) (x - 1) h w
+        None -> (y, x)
     where
-        makeDelta oldPos newPos =
-            if oldPos == newPos
-            then
-                [(oldPos, Player)]
-            else
-                [(newPos, Player), (oldPos, Floor)]
+        handleEdge delta edge
+            |delta < 1 = 1
+            |delta > edge = edge
+            |otherwise = delta
+        handleDiagonal currentY currentX deltaY deltaX yEdge xEdge
+            |deltaY < 1 || deltaX < 1 = (currentY, currentX)
+            |deltaY > yEdge ||deltaX > xEdge = (currentY, currentX)
+            |otherwise = (deltaY, deltaX)
 
 moveHelper :: Movement -> PlayerData -> BoardInfo -> Point
 moveHelper mov (PlayerData _ (y,x) _) (BoardInfo h w) =
@@ -49,19 +73,35 @@ moveHelper mov (PlayerData _ (y,x) _) (BoardInfo h w) =
 initializeMap :: BoardInfo -> GameState
 initializeMap (BoardInfo h w) =
     let
-        playerData = PlayerData "rogue" (h `div` 2, w `div` 2) 10
-        iniMap = listArray ((1,1), (h, w)) (replicate (h * w) Floor)
-        mapWithPlayer = iniMap // [(position playerData, Player)]
+        playerEntity = makePlayer
+        iniMap = listArray ((1,1), (h, w)) (replicate (h * w) (Cell Nothing floorTile))
+        mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile)] --just testing the wall
         mData = MapData 1 mapWithPlayer
     in
-        GameState playerData mData
+        GameState mData
 
 
-updateMap :: GameState -> DeltaBoard -> GameState
-updateMap state@(GameState _ mapData) delta =
+updateMap :: GameState -> GridDelta -> GameState
+updateMap state@(GameState mapData) delta =
     let
         newGrid = grid mapData // delta
         newMapData = MapData (level mapData) newGrid
     in
         state{mapData = newMapData}
+
+
+getEntityPosition :: Entity -> GameState -> Maybe Point
+getEntityPosition entity (GameState mapData) =
+    let
+        elements = assocs $ grid mapData
+        point = findEntity entity elements
+    in
+        point
+
+findEntity :: Entity -> [(Point, Cell)] -> Maybe Point
+findEntity _ [] = Nothing
+findEntity entity ((p, Cell (Just e) _ ) : es) = if entity == e then Just p else findEntity entity es
+findEntity entity ((_, Cell Nothing _) : es) = findEntity entity es
+
+
 
