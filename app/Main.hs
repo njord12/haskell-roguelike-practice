@@ -1,9 +1,10 @@
 module Main (main) where
 import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
 import Types (Movement(..), GameState(..), BoardInfo (..),  MapData (..))
-import RenderState (render)
+import RenderState (renderNew)
 import GameState (move, initializeMap)
 import Data.Maybe (fromMaybe)
+import Entities (makePlayer)
 
 main :: IO ()
 main = do
@@ -20,11 +21,11 @@ main = do
     gameLoop bInfo gState
 
 gameLoop :: BoardInfo -> GameState -> IO ()
-gameLoop binf state@(GameState player mapData) = do
-    putStr $ render binf (grid mapData) 
+gameLoop binf state@(GameState mapData) = do
+    putStr $ renderNew binf (grid mapData) 
     key <- getKey
     let m = fromMaybe None (parseInput [head key])
-    let gState' = move binf m state
+    let gState' = move binf m makePlayer state
     putStr "\ESC[2J" --This cleans the console screen
     gameLoop binf gState'
 
