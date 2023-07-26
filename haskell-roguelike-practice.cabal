@@ -57,7 +57,6 @@ test-suite haskell-roguelike-practice-test
   main-is: Spec.hs
   other-modules:
       GameStateSpec
-      RenderStateSpec
       SpecHelper
       Paths_haskell_roguelike_practice
   hs-source-dirs:
