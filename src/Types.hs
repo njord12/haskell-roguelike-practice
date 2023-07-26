@@ -14,6 +14,7 @@ module Types (Movement (..),
     EntityType (..),
     Cell (..),
     GridDelta,
+    Grid,
     emptyMessageQueue,
     enqueueMessage,
     nextMessage 

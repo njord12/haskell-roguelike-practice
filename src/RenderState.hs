@@ -1,15 +1,15 @@
 {-# LANGUAGE BangPatterns #-}
-module RenderState (updateRenderState, emptyBoard, render)
+module RenderState (updateRenderState, emptyBoard, render, renderNew)
 where
 
 
 import Data.Array (listArray, (//))
 import Data.Foldable (foldl')
-import Types (RenderState(..), BoardInfo (..), Board, Point, RenderMessage(..), RenderState, TileType (..))
+import Types (RenderState(..), BoardInfo (..), Board, Point, RenderMessage(..), RenderState, TileType (..), Grid, Cell (Cell), entityGlyph, Tile (tileGlyph))
 
 
 emptyBoard :: BoardInfo -> Board
-emptyBoard (BoardInfo height width) = 
+emptyBoard (BoardInfo height width) =
     listArray bounds emptyCells
     where
         bounds = ((1,1), (height, width))
@@ -26,7 +26,7 @@ updateRenderState (RenderState b gO) message =
 
 glyphToChar :: TileType -> String
 glyphToChar c =
-    case c of 
+    case c of
         Floor -> ". "
         Wall -> "# "
         UpStair -> "< "
@@ -41,3 +41,17 @@ render (BoardInfo _ w) board =
       if((i + 1) `mod` w) == 0
         then (s <> glyphToChar cell <> "\n", i + 1)
         else (s <> glyphToChar cell, i + 1)
+
+renderNew :: BoardInfo -> Grid -> String
+renderNew (BoardInfo _ w) g =
+  fst $ gridToString g
+  where
+    gridToString = foldl' fprint ("", 0)
+    fprint (!s, !i) cell =
+      if((i + 1) `mod` w) == 0
+        then (s <> decideGlyph cell <> "\n", i + 1)
+        else (s <> decideGlyph cell, i+ 1)
+    decideGlyph (Cell e t) =
+      case e of
+        Just entity -> entityGlyph entity : " "
+        Nothing -> tileGlyph t : " "
