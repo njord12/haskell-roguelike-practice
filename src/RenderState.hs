@@ -1,11 +1,11 @@
 {-# LANGUAGE BangPatterns #-}
-module RenderState (updateRenderState, buildInitialBoard, emptyBoard, render)
+module RenderState (updateRenderState, emptyBoard, render)
 where
 
 
 import Data.Array (listArray, (//))
 import Data.Foldable (foldl')
-import Types (RenderState(..), BoardInfo (..), Board, Point, RenderMessage(..), RenderState, CellType (..))
+import Types (RenderState(..), BoardInfo (..), Board, Point, RenderMessage(..), RenderState, TileType (..))
 
 
 emptyBoard :: BoardInfo -> Board
@@ -14,10 +14,6 @@ emptyBoard (BoardInfo height width) =
     where
         bounds = ((1,1), (height, width))
         emptyCells = replicate (height * width) Floor
-
-buildInitialBoard :: BoardInfo -> Point -> RenderState
-buildInitialBoard bi iniPlayer =
-    RenderState (emptyBoard  bi // [(iniPlayer, Player)]) False
 
 
 updateRenderState :: RenderState -> RenderMessage -> RenderState
@@ -28,12 +24,13 @@ updateRenderState (RenderState b gO) message =
         GameOver ->
             RenderState b True
 
-glyphToChar :: CellType -> String
+glyphToChar :: TileType -> String
 glyphToChar c =
     case c of 
         Floor -> ". "
-        Player -> "@ "
         Wall -> "# "
+        UpStair -> "< "
+        DownStair -> "> "
 
 render :: BoardInfo -> Board -> String
 render (BoardInfo _ w) board =
