@@ -2,13 +2,18 @@ module Types (Movement (..),
     MapData (..),
     GameState(..),
     Point,
-    CellType (..),
+    TileType (..),
     BoardInfo (..),
     Board,
     DeltaBoard,
     RenderMessage (..),
     RenderState (..),
     PlayerData (..),
+    Tile (..),
+    Entity (..),
+    EntityType (..),
+    Cell (..),
+    GridDelta,
     emptyMessageQueue,
     enqueueMessage,
     nextMessage 
@@ -20,21 +25,36 @@ newtype MessageQueue = MessageQueue [String] deriving Show
 
 data Movement = North | South | East | West | NorthEast | NorthWest | SouthEast | SouthWest | None deriving Show
 
-data PlayerData = PlayerData {name :: String, position :: Point, hitPoints :: Int} deriving (Show, Eq)
+data PlayerData = PlayerData {playerName :: String, position :: Point, hitPoints :: Int} deriving (Show, Eq)
 
-data MapData = MapData {level :: Int, grid :: Board}
+data MapData = MapData {level :: Int, grid :: Grid}
 
-data GameState = GameState {player :: PlayerData, mapData :: MapData}
+data GameState = GameState { mapData :: MapData}
 
 type Point = (Int, Int)
 
-data CellType = Floor | Player | Wall deriving (Show, Eq)
+data TileType = Floor | Wall | UpStair | DownStair deriving (Show, Eq)
+
+data Tile = Tile {tileGlyph :: Char, blocksMovement :: Bool, cellType :: TileType} deriving (Show, Eq)
+
+data Entity = Entity {entityName :: String, entityGlyph :: Char, entityType :: EntityType, entityId :: Int} deriving Show
+
+instance Eq Entity where
+    x == y = entityId x == entityId y
+
+data EntityType = Player | Monster | Item deriving (Show, Eq)
+
+data Cell = Cell {entity :: Maybe Entity, tile :: Tile} deriving (Show, Eq)
 
 data BoardInfo = BoardInfo {height :: Int, width :: Int} deriving (Show, Eq)
 
-type Board = Array Point CellType
+type Board = Array Point TileType
 
-type DeltaBoard = [(Point, CellType)]
+type Grid = Array Point Cell
+
+type GridDelta = [(Point, Cell)]
+
+type DeltaBoard = [(Point, TileType)]
 
 data RenderMessage = RenderBoard DeltaBoard | GameOver deriving Show
 
