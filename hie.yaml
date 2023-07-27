@@ -1,2 +1,13 @@
 cradle:
   stack:
+    - path: "./src"
+      component: "haskell-roguelike-practice:lib"
+
+    - path: "./app/Main.hs"
+      component: "haskell-roguelike-practice:exe:haskell-roguelike-practice-exe"
+
+    - path: "./app/Paths_haskell_roguelike_practice.hs"
+      component: "haskell-roguelike-practice:exe:haskell-roguelike-practice-exe"
+
+    - path: "./test"
+      component: "haskell-roguelike-practice:test:haskell-roguelike-practice-test"
