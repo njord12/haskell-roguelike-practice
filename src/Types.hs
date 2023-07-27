@@ -3,7 +3,7 @@ module Types (Movement (..),
     GameState(..),
     Point,
     TileType (..),
-    BoardInfo (..),
+    GridSize (..),
     Board,
     DeltaBoard,
     RenderMessage (..),
@@ -47,7 +47,7 @@ data EntityType = Player | Monster | Item deriving (Show, Eq)
 
 data Cell = Cell {entity :: Maybe Entity, tile :: Tile} deriving (Show, Eq)
 
-data BoardInfo = BoardInfo {height :: Int, width :: Int} deriving (Show, Eq)
+data GridSize = BoardInfo {height :: Int, width :: Int} deriving (Show, Eq)
 
 type Board = Array Point TileType
 

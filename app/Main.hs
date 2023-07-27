@@ -1,6 +1,6 @@
 module Main (main) where
 import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
-import Types (Movement(..), GameState(..), BoardInfo (..),  MapData (..))
+import Types (Movement(..), GameState(..), GridSize (..),  MapData (..))
 import RenderState (renderNew)
 import GameState (move, initializeMap)
 import Data.Maybe (fromMaybe)
@@ -20,7 +20,7 @@ main = do
     
     gameLoop bInfo gState
 
-gameLoop :: BoardInfo -> GameState -> IO ()
+gameLoop :: GridSize -> GameState -> IO ()
 gameLoop binf state@(GameState mapData) = do
     putStr $ renderNew binf (grid mapData) 
     key <- getKey

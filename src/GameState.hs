@@ -10,7 +10,7 @@ import Data.Maybe (fromMaybe)
 --Test this
 --This might cause problems if the entity doesn't exist 
 --Will most likely need to refactor it
-move :: BoardInfo -> Movement -> Entity -> GameState -> GameState
+move :: GridSize -> Movement -> Entity -> GameState -> GameState
 move bi mov entity state@(GameState mapGrid) =
     let
         oldPosition = fromMaybe (0, 0) (getEntityPosition entity state)
@@ -25,7 +25,7 @@ move bi mov entity state@(GameState mapGrid) =
 
 
 
-moveHelperNew :: Movement -> Point -> BoardInfo -> Point
+moveHelperNew :: Movement -> Point -> GridSize -> Point
 moveHelperNew mov (y,x) (BoardInfo h w) =
     case mov of
         North -> (handleEdge (y - 1) h, x)
@@ -47,7 +47,7 @@ moveHelperNew mov (y,x) (BoardInfo h w) =
             |deltaY > yEdge ||deltaX > xEdge = (currentY, currentX)
             |otherwise = (deltaY, deltaX)
 
-moveHelper :: Movement -> PlayerData -> BoardInfo -> Point
+moveHelper :: Movement -> PlayerData -> GridSize -> Point
 moveHelper mov (PlayerData _ (y,x) _) (BoardInfo h w) =
     case mov of
         North -> (handleEdge (y - 1) h, x)
@@ -70,7 +70,7 @@ moveHelper mov (PlayerData _ (y,x) _) (BoardInfo h w) =
             |otherwise = (deltaY, deltaX)
 
 
-initializeMap :: BoardInfo -> GameState
+initializeMap :: GridSize -> GameState
 initializeMap (BoardInfo h w) =
     let
         playerEntity = makePlayer

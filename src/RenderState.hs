@@ -5,10 +5,10 @@ where
 
 import Data.Array (listArray, (//))
 import Data.Foldable (foldl')
-import Types (RenderState(..), BoardInfo (..), Board, Point, RenderMessage(..), RenderState, TileType (..), Grid, Cell (Cell), entityGlyph, Tile (tileGlyph))
+import Types (RenderState(..), GridSize (..), Board, RenderMessage(..), RenderState, TileType (..), Grid, Cell (Cell), entityGlyph, Tile (tileGlyph))
 
 
-emptyBoard :: BoardInfo -> Board
+emptyBoard :: GridSize -> Board
 emptyBoard (BoardInfo height width) =
     listArray bounds emptyCells
     where
@@ -32,7 +32,7 @@ glyphToChar c =
         UpStair -> "< "
         DownStair -> "> "
 
-render :: BoardInfo -> Board -> String
+render :: GridSize -> Board -> String
 render (BoardInfo _ w) board =
   fst $ boardToString board
   where
@@ -42,7 +42,7 @@ render (BoardInfo _ w) board =
         then (s <> glyphToChar cell <> "\n", i + 1)
         else (s <> glyphToChar cell, i + 1)
 
-renderNew :: BoardInfo -> Grid -> String
+renderNew :: GridSize -> Grid -> String
 renderNew (BoardInfo _ w) g =
   fst $ gridToString g
   where
