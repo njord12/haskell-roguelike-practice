@@ -1,4 +1,4 @@
-module GameState (move, moveHelper, initializeMap, getEntityPosition)
+module GameState (move,initializeMap, getEntityPosition)
 where
 import Types
 import Entities (makePlayer, floorTile)
@@ -14,7 +14,7 @@ move :: GridSize -> Movement -> Entity -> GameState -> GameState
 move bi mov entity state@(GameState mapGrid) =
     let
         oldPosition = fromMaybe (0, 0) (getEntityPosition entity state)
-        newPosition = moveHelperNew mov oldPosition bi
+        newPosition = moveHelper mov oldPosition bi
         currentCell = grid mapGrid ! oldPosition
         newCell = grid mapGrid ! newPosition
         delta = [(oldPosition, currentCell{entity = Nothing}), (newPosition, newCell{entity=Just entity})]
@@ -25,8 +25,8 @@ move bi mov entity state@(GameState mapGrid) =
 
 
 
-moveHelperNew :: Movement -> Point -> GridSize -> Point
-moveHelperNew mov (y,x) (BoardInfo h w) =
+moveHelper :: Movement -> Point -> GridSize -> Point
+moveHelper mov (y,x) (BoardInfo h w) =
     case mov of
         North -> (handleEdge (y - 1) h, x)
         South -> (handleEdge (y + 1) h, x)
@@ -46,29 +46,6 @@ moveHelperNew mov (y,x) (BoardInfo h w) =
             |deltaY < 1 || deltaX < 1 = (currentY, currentX)
             |deltaY > yEdge ||deltaX > xEdge = (currentY, currentX)
             |otherwise = (deltaY, deltaX)
-
-moveHelper :: Movement -> PlayerData -> GridSize -> Point
-moveHelper mov (PlayerData _ (y,x) _) (BoardInfo h w) =
-    case mov of
-        North -> (handleEdge (y - 1) h, x)
-        South -> (handleEdge (y + 1) h, x)
-        East -> (y, handleEdge (x + 1) w)
-        West -> (y, handleEdge (x - 1) w)
-        NorthEast -> handleDiagonal y x (y - 1) (x + 1) h w
-        NorthWest -> handleDiagonal y x (y - 1) (x - 1) h w
-        SouthEast -> handleDiagonal y x (y + 1) (x + 1) h w
-        SouthWest -> handleDiagonal y x (y + 1) (x - 1) h w
-        None -> (y, x)
-    where
-        handleEdge delta edge
-            |delta < 1 = 1
-            |delta > edge = edge
-            |otherwise = delta
-        handleDiagonal currentY currentX deltaY deltaX yEdge xEdge
-            |deltaY < 1 || deltaX < 1 = (currentY, currentX)
-            |deltaY > yEdge ||deltaX > xEdge = (currentY, currentX)
-            |otherwise = (deltaY, deltaX)
-
 
 initializeMap :: GridSize -> GameState
 initializeMap (BoardInfo h w) =

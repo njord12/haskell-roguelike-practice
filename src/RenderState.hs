@@ -1,5 +1,5 @@
 {-# LANGUAGE BangPatterns #-}
-module RenderState (updateRenderState, emptyBoard, render, renderNew)
+module RenderState (updateRenderState, emptyBoard, render)
 where
 
 
@@ -24,26 +24,8 @@ updateRenderState (RenderState b gO) message =
         GameOver ->
             RenderState b True
 
-glyphToChar :: TileType -> String
-glyphToChar c =
-    case c of
-        Floor -> ". "
-        Wall -> "# "
-        UpStair -> "< "
-        DownStair -> "> "
-
-render :: GridSize -> Board -> String
-render (BoardInfo _ w) board =
-  fst $ boardToString board
-  where
-    boardToString = foldl' fprint ("", 0)
-    fprint (!s, !i) cell =
-      if((i + 1) `mod` w) == 0
-        then (s <> glyphToChar cell <> "\n", i + 1)
-        else (s <> glyphToChar cell, i + 1)
-
-renderNew :: GridSize -> Grid -> String
-renderNew (BoardInfo _ w) g =
+render :: GridSize -> Grid -> String
+render (BoardInfo _ w) g =
   fst $ gridToString g
   where
     gridToString = foldl' fprint ("", 0)

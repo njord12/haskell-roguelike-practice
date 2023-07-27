@@ -1,7 +1,7 @@
 module Main (main) where
 import System.IO (hReady, stdin, hSetBuffering, BufferMode (NoBuffering), hSetEcho, stdout, hSetBinaryMode)
 import Types (Movement(..), GameState(..), GridSize (..),  MapData (..))
-import RenderState (renderNew)
+import RenderState (render)
 import GameState (move, initializeMap)
 import Data.Maybe (fromMaybe)
 import Entities (makePlayer)
@@ -22,7 +22,7 @@ main = do
 
 gameLoop :: GridSize -> GameState -> IO ()
 gameLoop binf state@(GameState mapData) = do
-    putStr $ renderNew binf (grid mapData) 
+    putStr $ render binf (grid mapData) 
     key <- getKey
     let m = fromMaybe None (parseInput [head key])
     let gState' = move binf m makePlayer state
