@@ -21,6 +21,7 @@ module Types (Movement (..),
     )
 where
 import Data.Array ( Array )
+import RandomGenerator
 
 newtype MessageQueue = MessageQueue [String] deriving Show 
 
@@ -30,7 +31,7 @@ data PlayerData = PlayerData {playerName :: String, position :: Point, hitPoints
 
 data MapData = MapData {level :: Int, grid :: Grid}
 
-data GameState = GameState { mapData :: MapData}
+data GameState = GameState { mapData :: MapData, pcGen :: PCGen}
 
 type Point = (Int, Int)
 
