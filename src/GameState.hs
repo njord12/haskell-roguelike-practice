@@ -1,17 +1,18 @@
 module GameState (move,initializeMap, getEntityPosition)
 where
 import Types
-import Entities (makePlayer, floorTile)
+import Entities (makePlayer, floorTile, wallTile)
 import Data.Array ( (//), listArray, (!) )
 import Data.Array.Base (assocs)
 import Data.Maybe (fromMaybe)
+import RandomGenerator (PCGen(PCGen))
 
 
 --Test this
 --This might cause problems if the entity doesn't exist 
 --Will most likely need to refactor it
 move :: GridSize -> Movement -> Entity -> GameState -> GameState
-move bi mov entity state@(GameState mapGrid) =
+move bi mov entity state@(GameState mapGrid gen) =
     let
         oldPosition = fromMaybe (0, 0) (getEntityPosition entity state)
         newPosition = moveHelper mov oldPosition bi
@@ -19,9 +20,13 @@ move bi mov entity state@(GameState mapGrid) =
         newCell = grid mapGrid ! newPosition
         delta = [(oldPosition, currentCell{entity = Nothing}), (newPosition, newCell{entity=Just entity})]
     in
-        case oldPosition of
-            (0, 0) -> state
-            (_, _) -> updateMap state delta
+        if isWalkable newPosition (grid mapGrid)
+            then
+                case oldPosition of
+                    (0, 0) -> state
+                    (_, _) -> updateMap state delta
+            else
+                state
 
 
 
@@ -52,14 +57,14 @@ initializeMap (BoardInfo h w) =
     let
         playerEntity = makePlayer
         iniMap = listArray ((1,1), (h, w)) (replicate (h * w) (Cell Nothing floorTile))
-        mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile)] --just testing the wall
+        mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile), ((6,6), Cell Nothing wallTile)] --just testing the wall
         mData = MapData 1 mapWithPlayer
     in
-        GameState mData
+        GameState mData (PCGen 10000 10000)
 
 
 updateMap :: GameState -> GridDelta -> GameState
-updateMap state@(GameState mapData) delta =
+updateMap state@(GameState mapData gen) delta =
     let
         newGrid = grid mapData // delta
         newMapData = MapData (level mapData) newGrid
@@ -68,7 +73,7 @@ updateMap state@(GameState mapData) delta =
 
 
 getEntityPosition :: Entity -> GameState -> Maybe Point
-getEntityPosition entity (GameState mapData) =
+getEntityPosition entity (GameState mapData gen) =
     let
         elements = assocs $ grid mapData
         point = findEntity entity elements
@@ -80,5 +85,14 @@ findEntity _ [] = Nothing
 findEntity entity ((p, Cell (Just e) _ ) : es) = if entity == e then Just p else findEntity entity es
 findEntity entity ((_, Cell Nothing _) : es) = findEntity entity es
 
-
+isWalkable :: Point -> Grid -> Bool
+isWalkable p grid =
+    let
+        (Cell e t) = grid ! p
+        isThereEntity = 
+            case e of
+                Just x -> True
+                Nothing -> False
+    in
+        not (blocksMovement t || isThereEntity)
 
