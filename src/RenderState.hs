@@ -7,7 +7,7 @@ import Data.Foldable (foldl')
 import Types (Board, Cell (Cell), Grid, GridSize (..), RenderMessage (..), RenderState (..), Tile (tileGlyph), TileType (..), entityGlyph)
 
 emptyBoard :: GridSize -> Board
-emptyBoard (BoardInfo height width) =
+emptyBoard (GridSize height width) =
   listArray bounds emptyCells
   where
     bounds = ((1, 1), (height, width))
@@ -22,7 +22,7 @@ updateRenderState (RenderState b gO) message =
       RenderState b True
 
 render :: GridSize -> Grid -> String
-render (BoardInfo _ w) g =
+render (GridSize _ w) g =
   fst $ gridToString g
   where
     gridToString = foldl' fprint ("", 0)

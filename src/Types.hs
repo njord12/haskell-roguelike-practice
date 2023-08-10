@@ -48,7 +48,7 @@ data EntityType = Player | Monster | Item deriving (Show, Eq)
 
 data Cell = Cell {entity :: Maybe Entity, tile :: Tile} deriving (Show, Eq)
 
-data GridSize = BoardInfo {height :: Int, width :: Int} deriving (Show, Eq)
+data GridSize = GridSize {height :: Int, width :: Int} deriving (Show, Eq)
 
 type Board = Array Point TileType
 
