@@ -6,6 +6,7 @@ import Data.Array ( (//), listArray, (!) )
 import Data.Array.Base (assocs)
 import Data.Maybe (fromMaybe)
 import RandomGenerator (PCGen(PCGen))
+import DungeonGenerator (makeDungeon)
 
 
 --Test this
@@ -31,7 +32,7 @@ move bi mov entity state@(GameState mapGrid gen) =
 
 
 moveHelper :: Movement -> Point -> GridSize -> Point
-moveHelper mov (y,x) (BoardInfo h w) =
+moveHelper mov (y,x) (GridSize h w) =
     case mov of
         North -> (handleEdge (y - 1) h, x)
         South -> (handleEdge (y + 1) h, x)
@@ -53,12 +54,12 @@ moveHelper mov (y,x) (BoardInfo h w) =
             |otherwise = (deltaY, deltaX)
 
 initializeMap :: GridSize -> GameState
-initializeMap (BoardInfo h w) =
+initializeMap gridSize@(GridSize h w) =
     let
         playerEntity = makePlayer
         iniMap = listArray ((1,1), (h, w)) (replicate (h * w) (Cell Nothing floorTile))
         mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile)] 
-        mData = MapData 1 mapWithPlayer
+        mData = MapData 1 (mapWithPlayer // makeDungeon gridSize)
     in
         GameState mData (PCGen 10000 10000)
 

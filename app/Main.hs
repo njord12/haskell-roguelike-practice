@@ -8,7 +8,7 @@ import Entities (makePlayer)
 
 main :: IO ()
 main = do
-    let bInfo = BoardInfo 10 10
+    let bInfo = GridSize 20 20
     let gState = initializeMap bInfo
 
     --These are needed so the key strokes are read without the need of pressing enter
