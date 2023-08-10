@@ -21,7 +21,7 @@ main = do
     gameLoop bInfo gState
 
 gameLoop :: GridSize -> GameState -> IO ()
-gameLoop binf state@(GameState mapData) = do
+gameLoop binf state@(GameState mapData gen) = do
     putStr $ render binf (grid mapData) 
     key <- getKey
     let m = fromMaybe None (parseInput [head key])
