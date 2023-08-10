@@ -57,7 +57,7 @@ initializeMap (BoardInfo h w) =
     let
         playerEntity = makePlayer
         iniMap = listArray ((1,1), (h, w)) (replicate (h * w) (Cell Nothing floorTile))
-        mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile), ((6,6), Cell Nothing wallTile)] --just testing the wall
+        mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile)] 
         mData = MapData 1 mapWithPlayer
     in
         GameState mData (PCGen 10000 10000)
