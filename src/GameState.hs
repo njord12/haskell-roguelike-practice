@@ -57,9 +57,11 @@ initializeMap :: GridSize -> GameState
 initializeMap gridSize@(GridSize h w) =
     let
         playerEntity = makePlayer
-        iniMap = listArray ((1,1), (h, w)) (replicate (h * w) (Cell Nothing floorTile))
-        mapWithPlayer = iniMap // [((div h 2, div w 2), Cell (Just playerEntity) floorTile)] 
-        mData = MapData 1 (mapWithPlayer // makeDungeon gridSize)
+        iniMap = listArray ((1,1), (h, w)) (replicate (h * w) (Cell Nothing wallTile))
+        mapWithRooms = iniMap // makeDungeon gridSize
+        initialPlayerPos = findEmptyPoint (assocs mapWithRooms)
+        mapWithPlayer = mapWithRooms // [(fromMaybe (1,1) initialPlayerPos, Cell (Just playerEntity) floorTile)] 
+        mData = MapData 1 mapWithPlayer
     in
         GameState mData (PCGen 10000 10000)
 
@@ -96,4 +98,13 @@ isWalkable p grid =
                 Nothing -> False
     in
         not (blocksMovement t || isThereEntity)
+
+findEmptyPoint :: [(Point, Cell)] -> Maybe Point
+findEmptyPoint [] = Nothing
+findEmptyPoint ((p, Cell (Just e) t):cs) = findEmptyPoint cs
+findEmptyPoint ((p,Cell Nothing t):cs) =
+   if not $ blocksMovement t 
+   then Just p
+   else
+    findEmptyPoint cs
 
